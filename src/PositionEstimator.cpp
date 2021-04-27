@@ -2,7 +2,7 @@
 
 #include <opencv2/calib3d.hpp>
 
-#include <iostream>
+#include <math.h>
 
 namespace paper_pos
 {
@@ -62,13 +62,6 @@ namespace paper_pos
             y = atan2(-R.at<double>(2,0), sy);
             z = 0;
         }
-
-        std::cout << "sy: " << sy << std::endl;
-        std::cout << "R.at<double>(2,1): " << R.at<double>(2,1) << std::endl;
-        std::cout << "R.at<double>(2,2): " << R.at<double>(2,2) << std::endl;
-        std::cout << "x: " << x << std::endl;
-        std::cout << "y: " << y << std::endl;
-        std::cout << "z: " << z << std::endl;
 
         if (inDegrees)
         {
