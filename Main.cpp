@@ -12,7 +12,10 @@
 
 using namespace paper_pos;
 
-void resizeImage(cv::Mat& image, int width = 640)
+const float DEFAULT_FX = 500.0;
+const int DEFAULT_IMAGE_WIDTH = 640;
+
+void resizeImage(cv::Mat& image, int width)
 {
     double height = std::min(width, image.rows);
     cv::Size imageSize(int(height / image.rows * image.cols), height);
@@ -58,9 +61,9 @@ int main(int argc, char* argv[])
 
     if (fx < 0)
     {
-        resizeImage(image, 640);
+        resizeImage(image, DEFAULT_IMAGE_WIDTH);
 
-        fx = 500.0;
+        fx = DEFAULT_FX;
     }
 
     PaperFinder pf;
@@ -95,7 +98,7 @@ int main(int argc, char* argv[])
     // viz.drawAxis(image, K_mat, dist, R, t);
     cv::Mat segmImage = viz.segmentation(image, corners);
 
-    resizeImage(segmImage, 640);
+    resizeImage(segmImage, DEFAULT_IMAGE_WIDTH);
     cv::imshow("segmImage", segmImage);
     cv::waitKey(0);
 

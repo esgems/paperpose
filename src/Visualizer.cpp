@@ -8,16 +8,18 @@ namespace paper_pos
 {
     void Visualizer::drawCorners(cv::Mat& image, const std::vector<cv::Point2f>& corners, bool firstOnly)
     {
+        int circleRadius = 16;
+
         if (firstOnly)
         {
-            cv::circle(image, corners[0], 12, cv::Scalar(0, 255, 0), cv::FILLED);
+            cv::circle(image, corners[0], circleRadius, cv::Scalar(0, 255, 0), cv::FILLED);
 
             return;
         }
 
         for (int i = 0; i < corners.size(); ++i)
         {
-            cv::circle(image, corners[i], 16, cv::Scalar(i * 50, 0, 255), 2, cv::FILLED);
+            cv::circle(image, corners[i], circleRadius, cv::Scalar(i * 50, 0, 255), 2, cv::FILLED);
         }
     }
     
@@ -40,8 +42,10 @@ namespace paper_pos
         cv::Mat segmMask(image.size(), CV_8UC3, cv::Scalar(0));
         cv::drawContours(segmMask, std::vector<std::vector<cv::Point>> { cornerCenters }, -1, cv::Scalar(255, 0, 255), cv::FILLED, cv::LINE_AA);
 
+        float imageWeight = 0.7f;
+
         cv::Mat outImg;
-        cv::addWeighted(image, 0.7, segmMask, 1, 0.0, outImg);
+        cv::addWeighted(image, imageWeight, segmMask, 1, 0.0, outImg);
 
         return outImg.clone();
     }
