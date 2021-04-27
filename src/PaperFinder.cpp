@@ -8,16 +8,6 @@
 
 namespace paper_pos
 {
-    double angle(cv::Point pt1, cv::Point pt2, cv::Point pt0 )
-    {
-        double dx1 = pt1.x - pt0.x;
-        double dy1 = pt1.y - pt0.y;
-        double dx2 = pt2.x - pt0.x;
-        double dy2 = pt2.y - pt0.y;
-
-        return (dx1*dx2 + dy1*dy2)/sqrt((dx1*dx1 + dy1*dy1)*(dx2*dx2 + dy2*dy2) + 1e-10);
-    }
-
     bool PaperFinder::findCorners(const cv::Mat& image, std::vector<cv::Point2f>& outCorners)
     {
         std::vector<cv::Point2f> corners(4);
@@ -31,7 +21,6 @@ namespace paper_pos
         cv::Mat gray0(blurred.size(), CV_8U), gray;
         std::vector<std::vector<cv::Point> > contours;
 
-        float minCos = MAXFLOAT;
         float maxArea = 100;
 
         for (int c = 0; c < 3; c++)
@@ -53,22 +42,10 @@ namespace paper_pos
 
                 if (approx.size() == 4 && fabs(area) > maxArea && cv::isContourConvex(approx))
                 {
-                    double cosineSum = 0;
-                    for( int j = 2; j < 5; j++ )
-                    {
-                        double cosine = fabs(angle(approx[j%4], approx[j-2], approx[j-1]));
-                        cosineSum += cosine;
-                    }
+                    for (int j = 0; j < 4; ++j)
+                        corners[j] = cv::Point2f(approx[j].x, approx[j].y);
 
-                    // if (cosineSum < minCos)
-                    {
-                        minCos = cosineSum;
-
-                        for (int j = 0; j < 4; ++j)
-                            corners[j] = cv::Point2f(approx[j].x, approx[j].y);
-
-                        maxArea = area;
-                    }
+                    maxArea = area;
                 }
             }
         }

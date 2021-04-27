@@ -2,7 +2,8 @@ cmake_minimum_required(VERSION 3.0.2)
 
 project(paperpose)
 
-find_package(OpenCV 4.0 REQUIRED QUIET PATHS /home/rustam/programs/opencv/release)
+#find_package(OpenCV 4.0)
+find_package(OpenCV 4.0 REQUIRED PATHS "C:/opencv/build/x64/vc15/lib")
 
 SET(INCLUDE_DIRS
 	${PROJECT_SOURCE_DIR}

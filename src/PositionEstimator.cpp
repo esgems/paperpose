@@ -2,15 +2,8 @@
 
 #include <opencv2/calib3d.hpp>
 
-#include <iostream>
-
 namespace paper_pos
 {
-    double rad2deg(double rad)
-    {
-        return rad * 180.0 / M_PI;    
-    }
-
     void decompositionH(cv::Mat K, cv::Mat H, cv::Mat& R, cv::Mat& t)
     {
         cv::Mat h1 = H.col(0);
@@ -44,31 +37,24 @@ namespace paper_pos
         decompositionH(camMat, H, outR, outT);
     }
 
-    cv::Vec3d PositionEstimator::rotationMatrixToEulerAngles(const cv::Mat &R, bool inDegrees)
+    cv::Vec3d PositionEstimator::rotationMatrixToEulerAngles(const cv::Mat& R, bool inDegrees)
     {
         cv::Mat R2 = R.t();
-        float sy = sqrt(R.at<double>(2,1) * R.at<double>(2,1) + R.at<double>(2,2) * R.at<double>(2,2));
+        double sy = sqrt(R.at<double>(2, 1) * R.at<double>(2, 1) + R.at<double>(2, 2) * R.at<double>(2, 2));
 
-        float x, y, z;
+        double x, y, z;
         if (sy > 1e-6)
         {
-            x = atan2(R.at<double>(2,1) , R.at<double>(2,2));
-            y = atan2(-R.at<double>(2,0), sy);
-            z = atan2(R.at<double>(1,0), R.at<double>(0,0));
+            x = atan2(R.at<double>(2, 1), R.at<double>(2, 2));
+            y = atan2(-R.at<double>(2, 0), sy);
+            z = atan2(R.at<double>(1, 0), R.at<double>(0, 0));
         }
         else
         {
-            x = atan2(-R.at<double>(1,2), R.at<double>(1,1));
-            y = atan2(-R.at<double>(2,0), sy);
+            x = atan2(-R.at<double>(1, 2), R.at<double>(1, 1));
+            y = atan2(-R.at<double>(2, 0), sy);
             z = 0;
         }
-
-        std::cout << "sy: " << sy << std::endl;
-        std::cout << "R.at<double>(2,1): " << R.at<double>(2,1) << std::endl;
-        std::cout << "R.at<double>(2,2): " << R.at<double>(2,2) << std::endl;
-        std::cout << "x: " << x << std::endl;
-        std::cout << "y: " << y << std::endl;
-        std::cout << "z: " << z << std::endl;
 
         if (inDegrees)
         {
@@ -78,5 +64,10 @@ namespace paper_pos
         return cv::Vec3f(x, y, z);
 
     }
-    
+
+    double PositionEstimator::rad2deg(double rad)
+    {
+        return rad * rad2degMultiplier;
+    }
+
 } // namespace paper_pos
